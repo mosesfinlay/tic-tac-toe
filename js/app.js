@@ -1,4 +1,4 @@
-!function() {
+// !function() {
 // Hides the game board
 $("#board").hide();
 
@@ -149,8 +149,42 @@ const checkWin = player => {
   }
 };
 
-const computerMove = () => {
-  // Computer move
+const computerMove = item => {
+  const move = () => {
+    let selectedBoxes = [];
+    let freeMoves = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    // Adds the selected boxes to the selectedBoxes array
+    $(".box").each((index, item) => {
+      if (item.className === "box box-filled-1") {
+        selectedBoxes.push($(".box").index(item)+1);
+      }
+
+      if (item.className === "box box-filled-2") {
+        selectedBoxes.push($(".box").index(item)+1);
+      }
+    });
+
+    // Removes taken moves from the freeMoves array
+    for (let i = 0; i < selectedBoxes.length; i++) {
+      for (let j = 0; j < freeMoves.length; j++) {
+        if (selectedBoxes[i] === freeMoves[j]) {
+          freeMoves.splice(j, 1);
+        }
+      }
+    }
+
+
+    const move = freeMoves[Math.floor(Math.random() * freeMoves.length)];
+
+    return move;
+  };
+
+  $(`.box:nth-child(${move()})`).addClass("box-filled-2");
+  $("#player2").removeClass("active");
+  $("#player1").addClass("active");
+  checkWin("x");
+  currentPlayer = players[0];
 };
 
 const switchTurn = (player, item) => {
@@ -163,13 +197,7 @@ const switchTurn = (player, item) => {
       currentPlayer = players[1];
     }
   } else if (player === "x") {
-    if (item.className !== "box box-filled-2" && item.className === "box") {
-      $(item).addClass("box-filled-2");
-      $("#player2").removeClass("active");
-      $("#player1").addClass("active");
-      checkWin("x");
-      currentPlayer = players[0];
-    }
+    computerMove(item);
   }
 };
 
@@ -187,11 +215,10 @@ $(".boxes .box").each((index, item) => {
   $(item).on("click", () => {
     if (currentPlayer === "o") {
       switchTurn("o", item);
-    } else if (currentPlayer === "x") {
       switchTurn("x", item);
     }
   });
 });
 
 
-}();
+// }();
