@@ -187,20 +187,6 @@ const computerMove = item => {
   currentPlayer = players[0];
 };
 
-const switchTurn = (player, item) => {
-  if (player === "o") {
-    if (item.className !== "box box-filled-1" && item.className === "box") {
-      $(item).addClass("box-filled-1");
-      $("#player1").removeClass("active");
-      $("#player2").addClass("active");
-      checkWin("o");
-      currentPlayer = players[1];
-    }
-  } else if (player === "x") {
-    computerMove(item);
-  }
-};
-
 $(".boxes .box").each((index, item) => {
   // When the mouse hovers over a box, a background image appears
   $(item).on("mouseenter", () => {
@@ -214,8 +200,14 @@ $(".boxes .box").each((index, item) => {
 
   $(item).on("click", () => {
     if (currentPlayer === "o") {
-      switchTurn("o", item);
-      switchTurn("x", item);
+      if (item.className !== "box box-filled-1" && item.className === "box") {
+        $(item).addClass("box-filled-1");
+        $("#player1").removeClass("active");
+        $("#player2").addClass("active");
+        checkWin("o");
+        currentPlayer = players[1];
+        computerMove(item);
+      }
     }
   });
 });
